@@ -40,7 +40,7 @@ def login():
 
 @app.errorhandler(Unauthorized)
 def redirect_unauthorized(e):
-    return redirect(url_for("/"))
+    return index()
 
 @app.route("/callback")
 def callback():
@@ -55,7 +55,15 @@ def flights():
     for flight, details in flights.items():
         time = datetime.utcfromtimestamp(details['time']).strftime('%Y-%m-%d %H:%M UTC')
         flightsRespond += f"{flight} · {details['aircraft']} · {time}<br>"
-    return f"Hello, {user.name}. <br>Flights:<br> {flightsRespond}"
+    return f'''
+    <head>
+        <meta name='verify-v1' content='unique-string'>
+        <title>Winged Flights</title>
+    </head>
+    <body>
+        <a>Hello, {user.name}. <br>Flights:<br> {flightsRespond}</a>
+    </body>
+    '''
 
 def run():
     app.run(host="0.0.0.0", port=80, debug=False)
