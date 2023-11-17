@@ -10,14 +10,33 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "true"
 
 app.config["DISCORD_CLIENT_ID"] = 1162221005901660240    # Discord client ID.
 app.config["DISCORD_CLIENT_SECRET"] = str(open('secret.txt', 'r').read())
-app.config["DISCORD_REDIRECT_URI"] = "http://localhost:8081/callback"
+app.config["DISCORD_REDIRECT_URI"] = "https://wingedflights.com/callback"
 app.config["DISCORD_BOT_TOKEN"] = str(open('token.txt', 'r').read())
 
 discord = DiscordOAuth2Session(app)
 
 @app.route("/")
 def index():
-    return discord.create_session(scope=["identify"])
+    return '''
+    <html>
+        <head>
+            <meta name='verify-v1' content='unique-string'>
+            <title>Winged Flights</title>
+            <script>
+                setTimeout(function(){
+                    window.location.href = "/login";
+                }, 1000);
+            </script>
+        </head>
+        <body>
+            <a>Redirecting...</a>
+        </body>
+    </html>
+    '''
+
+@app.route("/login")
+def login():
+    return discord.create_session(scope=['identify'])
 
 @app.errorhandler(Unauthorized)
 def redirect_unauthorized(e):
