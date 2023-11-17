@@ -26,7 +26,7 @@ def redirect_unauthorized(e):
 @app.route("/callback")
 def callback():
     discord.callback()
-    return redirect(url_for(".flights"))
+    return redirect(url_for("flights"))
 
 @app.route("/flights")
 def flights():
@@ -39,4 +39,4 @@ def flights():
     return f"Hello, {user.name}. <br>Flights:<br> {flightsRespond}"
 
 def run():
-    app.run(host="0.0.0.0", port=8081, debug=False)
+    app.run(host="0.0.0.0", port=80, debug=False)
