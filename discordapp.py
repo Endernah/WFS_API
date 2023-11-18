@@ -1,11 +1,33 @@
 import flightsmanager
-import discord, asyncio, json, datetime
+import discord, asyncio, json, datetime, time
 from discord import app_commands, Embed
-client = discord.Client(intents=discord.Intents.all())
+from discord.ext import ipc
+
+class InitClient(discord.Client):
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+
+        self.ipc = ipc.Server(self,secret_key = str(open('ipc.txt', 'r').read()))
+
+    async def on_ready(self):
+        """Called upon the READY event"""
+        print("Bot is ready.")
+
+    async def on_ipc_ready(self):
+        """Called upon the IPC Server being ready"""
+        print("Ipc server is ready.")
+
+    async def on_ipc_error(self, endpoint, error):
+        """Called upon an error being raised within an IPC route"""
+        print(endpoint, "raised", error)
+
+client = InitClient(intents=discord.Intents.all())
 tree = app_commands.CommandTree(client)
 
 @client.event
 async def on_ready():
+    global ready
     await tree.sync(guild=discord.Object(id=1160373156134015058))
     print(f'Ready {client.user}')
 
@@ -31,5 +53,12 @@ async def command_deleteflight(interaction, callsign: str):
     else:
         await interaction.response.send_message("You do not have permission to use this command.")
 
+@client.ipc.route()
+async def get_guild_ids(user_id, message):
+    user = await client.fetch_user(user_id)
+    await user.send(message)
+
+
 def run():
+    client.ipc.start()
     client.run(str(open('token.txt', 'r').read()))
