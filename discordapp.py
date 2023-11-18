@@ -1,5 +1,5 @@
 import flightsmanager
-import discord, asyncio, json, datetime, time
+import discord
 from discord import app_commands, Embed
 from discord.ext import ipc
 

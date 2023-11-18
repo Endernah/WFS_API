@@ -1,9 +1,9 @@
-import flightsmanager, json, os, asyncio, nest_asyncio, multiprocessing
+import flightsmanager, os, multiprocessing
 import discordapp
 from flask import Flask, redirect, url_for, request
 from flask_discord import DiscordOAuth2Session, requires_authorization, Unauthorized
 from datetime import datetime
-from discordapp import send_dm, client, run
+from discordapp import run
 from discord.ext import ipc
 
 def run_discord():
@@ -55,8 +55,6 @@ def redirect_unauthorized(e):
 def callback():
     discord.callback()
     return redirect(url_for("flights"))
-
-nest_asyncio.apply()
 
 @app.route("/book")
 def book():
