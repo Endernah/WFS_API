@@ -1,4 +1,5 @@
 import flightsmanager, os, multiprocessing
+import communicationmanager
 import discordapp
 from flask import Flask, redirect, url_for, request
 from flask_discord import DiscordOAuth2Session, requires_authorization, Unauthorized
@@ -59,9 +60,11 @@ def callback():
 @app.route("/book")
 def book():
     callsign = request.args.get('callsign')
-    user_id = request.args.get('user_id')
+    user = discord.fetch_user()
+    user_id = user.id
     flight = flightsmanager.getFlight(callsign)
     if flight != "Flight not found.":
+        print(f"Requested.. {communicationmanager.request('book', callsign=callsign, user_id=user_id)}")
         return f'Flight {callsign} booked!'
     else:
         return 'No flight found.', 400
@@ -75,13 +78,21 @@ def flights():
         time = datetime.utcfromtimestamp(details['time']).strftime('%Y-%m-%d %H:%M UTC')
         flightsRespond += f'''
         {flight} · {details['aircraft']} · {time}<br>
-        <form action="/book?callsign={flight}" method="get">
+        <form id="myForm">
             <input type="hidden" name="callsign" value="{flight}">
             <input type="submit" value="Book this flight">
         </form>
         <br>
+        <script>
+        document.getElementById('myForm').addEventListener('submit', function(event) {{
+        event.preventDefault();
+        fetch('/book?callsign={flight}&user_id={user.id}')
+        .then(response => response.text())
+        .then(data => console.log(data));
+        }});
+        </script>
         '''
-    return f'''
+        return f'''
     <head>
         <meta name='verify-v1' content='unique-string'>
         <title>Winged Flights</title>
