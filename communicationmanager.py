@@ -1,4 +1,3 @@
-# Python
 from collections import deque
 import pickle
 
