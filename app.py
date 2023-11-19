@@ -65,26 +65,26 @@ def book():
     flight = flightsmanager.getFlight(callsign)
     if flight != "Flight not found.":
         print(f"Requested.. {communicationmanager.request('book', callsign=callsign, user_id=user_id)}")
-        return f'Flight {callsign} booked!'
+        return f'True'
     else:
-        return 'No flight found.', 400
+        return 'False', 400
 
 @app.route("/flights")
 def flights():
     user = discord.fetch_user()
     flightsRespond = ''
     flights = flightsmanager.getFlights()
-    for flight, details in flights.items():
+    for i, (flight, details) in enumerate(flights.items()):
         time = datetime.utcfromtimestamp(details['time']).strftime('%Y-%m-%d %H:%M UTC')
         flightsRespond += f'''
         {flight} · {details['aircraft']} · {time}<br>
-        <form id="myForm">
+        <form id="myForm{i}">
             <input type="hidden" name="callsign" value="{flight}">
             <input type="submit" value="Book this flight">
         </form>
         <br>
         <script>
-        document.getElementById('myForm').addEventListener('submit', function(event) {{
+        document.getElementById('myForm{i}').addEventListener('submit', function(event) {{
         event.preventDefault();
         fetch('/book?callsign={flight}&user_id={user.id}')
         .then(response => response.text())
@@ -92,7 +92,7 @@ def flights():
         }});
         </script>
         '''
-        return f'''
+    return f'''
     <head>
         <meta name='verify-v1' content='unique-string'>
         <title>Winged Flights</title>
