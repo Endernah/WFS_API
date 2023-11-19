@@ -39,9 +39,14 @@ async def on_ready():
 @tree.command(name = "flights", description = "Gets the current flights", guild=discord.Object(id=1160373156134015058))
 async def command_flights(interaction):
     flights = flightsmanager.getFlights()
-    embed = Embed(title="Current Flights", description="Here are the current flights:", color=0x5CDBF0)
+    embed = Embed(title="Winged Flights", description="**Winged Flights:**", color=0x5CDBF0)
     for flight, details in flights.items():
         embed.add_field(name=f"{flight} · {details['aircraft']} · <t:{details['time']}>", value=f"", inline=False)
+    embed.add_field(name="Your Booked Flights:", value=f"", inline=False)
+    for flight, details in flights.items():
+        role = discord.utils.get(interaction.guild.roles, name=flight)
+        if f"{role.id}" in f"{interaction.guild.get_member(interaction.user.id).roles}":
+            embed.add_field(name=f"{flight} · {details['aircraft']} · <t:{details['time']}>", value=f"", inline=False)
     await interaction.response.send_message(embed=embed)
 
 @tree.command(name = "createflight", description = "Creates new flight", guild=discord.Object(id=1160373156134015058))
@@ -58,6 +63,9 @@ async def command_deleteflight(interaction, callsign: str):
     else:
         await interaction.response.send_message("You do not have permission to use this command.")
 
+@tree.command(name = "book", description = "Gives the link to the website", guild=discord.Object(id=1160373156134015058))
+async def command_deleteflight(interaction):
+    await interaction.response.send_message("Link to book a flight: https://wingedflights.com/")
 
 def run():
     client.run(str(open('token.txt', 'r').read()))
