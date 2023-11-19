@@ -40,13 +40,18 @@ async def on_ready():
 async def command_flights(interaction):
     flights = flightsmanager.getFlights()
     embed = Embed(title="Winged Flights", description="**Winged Flights:**", color=0x5CDBF0)
+    bookedFlights = ""
     for flight, details in flights.items():
         embed.add_field(name=f"{flight} · {details['aircraft']} · <t:{details['time']}>", value=f"", inline=False)
     embed.add_field(name="Your Booked Flights:", value=f"", inline=False)
     for flight, details in flights.items():
         role = discord.utils.get(interaction.guild.roles, name=flight)
         if f"{role.id}" in f"{interaction.guild.get_member(interaction.user.id).roles}":
-            embed.add_field(name=f"{flight} · {details['aircraft']} · <t:{details['time']}>", value=f"", inline=False)
+            if bookedFlights == "":
+                bookedFlights += f"{flight}"
+            else:
+                bookedFlights += f" · {flight}"
+    embed.add_field(name=f"{bookedFlights}", value=f"", inline=False)
     await interaction.response.send_message(embed=embed)
 
 @tree.command(name = "createflight", description = "Creates new flight", guild=discord.Object(id=1160373156134015058))
