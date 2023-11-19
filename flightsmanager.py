@@ -11,7 +11,7 @@ def createFlight(callsign, time, aircraft):
     }
     with open('flights.json', 'w') as f:
         json.dump(flights, f)
-    return flights[callsign]
+    return 'True'
 
 def getFlights():
     with open('flights.json', 'r') as f:
