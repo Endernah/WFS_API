@@ -64,7 +64,7 @@ def book():
     user_id = user.id
     flight = flightsmanager.getFlight(callsign)
     if flight != "Flight not found.":
-        print(f"Requested.. {communicationmanager.request('book', callsign=callsign, user_id=user_id)}")
+        communicationmanager.request('book', callsign=callsign, user_id=user_id)
         return f'True'
     else:
         return 'False', 400

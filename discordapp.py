@@ -11,17 +11,23 @@ tree = app_commands.CommandTree(client)
 async def senddm(callsign, user_id):
     user = client.get_user(user_id)
     if user:
-        await user.send(f"Your flight, {callsign}, has been booked.")
+        guild = client.get_guild(1160373156134015058)
+        role = discord.utils.get(guild.roles, name=callsign)
+        guildmember = guild.get_member(user.id)
+        if f"{role.id}" in f"{guildmember.roles}":
+            pass
+        else:
+            embed = discord.Embed(title="Flight Booked", description=f"Hello, {user.display_name}. Your flight, {callsign} has been booked.", color=0x5CDBF0)
+            await user.send(embed=embed)
+            await guildmember.add_roles(guild.get_role(role.id))
 
 async def checkForRequests():
     while True:
         request = communicationmanager.recieverequests()
         if request:
-            print("RECHIEVED SOMETHUNG")
             if request["function"] == "book":
-                print(f"THAT SOMETHUNG IS A BOOKUNG {request}")
                 await senddm(request["args"]["callsign"], request["args"]["user_id"])
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
 @client.event
 async def on_ready():
