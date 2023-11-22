@@ -1,5 +1,4 @@
 import flightsmanager
-import communicationmanager
 import discord
 import time, threading, asyncio
 from discord import app_commands, Embed
@@ -21,20 +20,20 @@ async def senddm(callsign, user_id):
             await user.send(embed=embed)
             await guildmember.add_roles(guild.get_role(role.id))
 
-async def checkForRequests():
-    while True:
-        request = communicationmanager.recieverequests()
-        if request:
-            if request["function"] == "book":
-                await senddm(request["args"]["callsign"], request["args"]["user_id"])
-        await asyncio.sleep(0.1)
+#async def checkForRequests():
+#    while True:
+#        request = communicationmanager.recieverequests()
+#        if request:
+#            if request["function"] == "book":
+#                await senddm(request["args"]["callsign"], request["args"]["user_id"])
+#        await asyncio.sleep(0.1)
 
 @client.event
 async def on_ready():
     global ready
     await tree.sync(guild=discord.Object(id=1160373156134015058))
     print(f'Ready {client.user}')
-    await checkForRequests()
+    #await checkForRequests()
 
 @tree.command(name = "flights", description = "Gets the current flights", guild=discord.Object(id=1160373156134015058))
 async def command_flights(interaction):
