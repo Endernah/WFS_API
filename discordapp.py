@@ -19,6 +19,7 @@ async def command_flights(interaction):
     embed = Embed(title="Winged Flights", description="**Winged Flights:**", color=0x5CDBF0)
     for flight, details in flights.items():
         embed.add_field(name=f"{flight} · {details['aircraft']} · <t:{details['time']}>", value=f"", inline=False)
+    await interaction.response.send_message(embed=embed)
 
 @tree.command(name = "createflight", description = "Creates new flight", guild=discord.Object(id=1160373156134015058))
 async def command_createflight(interaction, callsign: str, time: int, aircraft: str):
