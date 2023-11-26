@@ -16,7 +16,7 @@ async def on_ready():
 @tree.command(name = "flights", description = "Gets the current flights", guild=discord.Object(id=1160373156134015058))
 async def command_flights(interaction):
     flights = flightsmanager.getFlights()
-    embed = Embed(title="Winged Flights", description="**Winged Flights:**", color=0x5CDBF0)
+    embed = Embed(title="Winged Flights", description="", color=0x5CDBF0)
     for flight, details in flights.items():
         embed.add_field(name=f"{flight} · {details['aircraft']} · <t:{details['time']}>", value=f"", inline=False)
     await interaction.response.send_message(embed=embed)
