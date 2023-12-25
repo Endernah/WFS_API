@@ -40,13 +40,14 @@ async def command_announceflight(interaction, callsign: str, boardingtime: int):
     if "1163207937284649151" in f"{interaction.guild.get_member(interaction.user.id).roles}":
         members = ""
         embed = Embed(title="Winged Flights | Commencing Flight", description=f"Callsign: **{callsign}**, Game: [Click me!](https://www.roblox.com/games/14952149584/Winged-Flights), Boarding Time: <t:{boardingtime}> (Translated into your local timezone)", color=0x5CDBF0)
+        await interaction.response.send_message("Announcing...", embed=embed)
         for member in client.get_all_members():
-            members = f"{members}{member.name} "
             try:
                 await member.send(embed=embed)
+                members = f"{members}{member.name} "
             except:
                 continue
-        await interaction.send_message(f"Announced to: {members}", embed=embed)
+        await interaction.channel.send(f"<@{interaction.user.id}> Announced to: {members}")
     else:
         await interaction.response.send_message("You do not have permission to use this command.")
 
