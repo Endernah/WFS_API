@@ -42,8 +42,11 @@ async def command_announceflight(interaction, callsign: str, boardingtime: int):
         embed = Embed(title="Winged Flights | Commencing Flight", description=f"Callsign: **{callsign}**, Game: [Click me!](https://www.roblox.com/games/14952149584/Winged-Flights), Boarding Time: <t:{boardingtime}> (Translated into your local timezone)", color=0x5CDBF0)
         for member in client.get_all_members():
             members = f"{members}{member.name} "
-            await member.send(embed=embed)
-        await interaction.response.send_message(f"Announced to: {members}", embed=embed)
+            try:
+                await member.send(embed=embed)
+            except:
+                continue
+        await interaction.send_message(f"Announced to: {members}", embed=embed)
     else:
         await interaction.response.send_message("You do not have permission to use this command.")
 
