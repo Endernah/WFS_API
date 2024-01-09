@@ -1,13 +1,15 @@
 import json
 
-def createFlight(callsign, time, aircraft):
+def createFlight(callsign, time, aircraft, departure, arrival):
     with open('flights.json', 'r') as f:
         flights = json.load(f)
 
     # Add new flight
     flights[callsign] = {
         "time": time,
-        "aircraft": aircraft
+        "aircraft": aircraft,
+        "departure": departure,
+        "arrival": arrival,
     }
     with open('flights.json', 'w') as f:
         json.dump(flights, f)

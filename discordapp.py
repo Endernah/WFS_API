@@ -18,13 +18,16 @@ async def command_flights(interaction):
     flights = flightsmanager.getFlights()
     embed = Embed(title="Winged Flights", description="", color=0x5CDBF0)
     for flight, details in flights.items():
-        embed.add_field(name=f"{flight} · {details['aircraft']} · <t:{details['time']}>", value=f"", inline=False)
+        embed.add_field(name=f"Callsign: {flight} · Departure: {details['departure']} --> Arrival: {details['arrival']} · Aircraft: {details['aircraft']} · Boarding Time: <t:{details['time']}> (Translated into your local timezone)", value=f"", inline=False)
+    if flights == "" or flights == {}:
+        embed.add_field(name="There are currently no flights.", value="", inline=False)
     await interaction.response.send_message(embed=embed)
 
+# In discordapp.py
 @tree.command(name = "createflight", description = "Creates new flight", guild=discord.Object(id=1160373156134015058))
-async def command_createflight(interaction, callsign: str, time: int, aircraft: str):
+async def command_createflight(interaction, callsign: str, time: int, aircraft: str, departure: str, arrival: str):
     if "1163207937284649151" in f"{interaction.guild.get_member(interaction.user.id).roles}":
-        await interaction.response.send_message(f"Created: {str(flightsmanager.createFlight(callsign, time, aircraft))}")
+        await interaction.response.send_message(f"Created: {str(flightsmanager.createFlight(callsign, time, aircraft, departure, arrival))}")
     else:
         await interaction.response.send_message("You do not have permission to use this command.")
 
@@ -36,10 +39,10 @@ async def command_deleteflight(interaction, callsign: str):
         await interaction.response.send_message("You do not have permission to use this command.")
 
 @tree.command(name = "announceflight", description = "Announces a flight to everyones dms.", guild=discord.Object(id=1160373156134015058))
-async def command_announceflight(interaction, callsign: str, boardingtime: int):
+async def command_announceflight(interaction, callsign: str, boardingtime: int, airport: str):
     if "1163207937284649151" in f"{interaction.guild.get_member(interaction.user.id).roles}":
         members = ""
-        embed = Embed(title="Winged Flights | Commencing Flight", description=f"Callsign: **{callsign}**, Game: [Click me!](https://www.roblox.com/games/14952149584/Winged-Flights), Boarding Time: <t:{boardingtime}> (Translated into your local timezone)", color=0x5CDBF0)
+        embed = Embed(title="Winged Flights | Commencing Flight", description=f"Callsign: **{callsign}**, Airport: **{airport}**, Group: [Click me!](https://www.roblox.com/groups/15924642/Winged-Flight-Studios#!/about), Boarding Time: <t:{boardingtime}> (Translated into your local timezone)", color=0x5CDBF0)
         await interaction.response.send_message("Announcing...", embed=embed)
         for member in client.get_all_members():
             try:
